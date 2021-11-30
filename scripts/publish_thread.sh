@@ -1,5 +1,5 @@
 #!/usr/bin/bash
 
-echo "Publishing thread"
+echo "Publicando thread"
 
-python lidebot/main.py
+python lidebot/main.py --option publish
