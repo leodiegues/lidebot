@@ -100,7 +100,7 @@ def generate_thread(headlines: List[Headline]):
         if i == len(headlines) - 1:
             post.append(tweet)
     post = [*post, *[hl.url for hl in headlines]]
-    return list(post)
+    return post
 
 
 def authenticate() -> tweepy.API:
