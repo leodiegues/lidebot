@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "lidebot"
+version = "0.1.0"
+description = ""
+authors = ["Leonardo Diegues <dscleo@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11"
+tweepy = "^4.4.0"
+Scrapy = "^2.5.1"
+pytest = "^6.2.5"
+numpy = "^1.21.4"
+
+[tool.poetry.dev-dependencies]
+black = "^21.11b1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

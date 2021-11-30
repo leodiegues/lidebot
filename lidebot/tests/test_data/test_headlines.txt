@@ -1,0 +1,3 @@
+"a very very very long title1","url1","2021-01-01 20:30:10","folha"
+"a very very very long title2","url2","2021-01-01 20:30:10","estadao"
+"a very very very long title3","url3","2021-01-01 20:30:10","oglobo"
