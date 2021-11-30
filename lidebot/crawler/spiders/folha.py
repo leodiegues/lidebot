@@ -11,8 +11,8 @@ class FolhaSpider(scrapy.Spider):
 
     def parse(self, response):
         yield Headline(
-            title=response.css("h2.c-main-headline__title::text").extract(),
-            url=response.css("a.c-main-headline__url::attr(href)").extract(),
+            title=response.css("h2.c-main-headline__title::text").extract_first(),
+            url=response.css("a.c-main-headline__url::attr(href)").extract_first(),
             collected_at=datetime.now(),
             source=self.name,
         )
