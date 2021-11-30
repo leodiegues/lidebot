@@ -2,6 +2,7 @@ import io
 import os
 import csv
 import tweepy
+import argparse
 from typing import List
 from datetime import datetime
 from dataclasses import dataclass
@@ -144,10 +145,31 @@ def delete_thread(api: tweepy.API, tweet_ids: List[int]) -> None:
         api.destroy_status(tweet_id)
 
 
+def parse_args() -> argparse.Namespace:
+    """
+    Parse os argumentos da linha de comando
+    """
+    parser = argparse.ArgumentParser(description="lidebot")
+    parser.add_argument(
+        "--option", "-o", type=str, help="option", choices=["publish", "delete"]
+    )
+    args = parser.parse_args()
+    return args
+
+
 if __name__ == "__main__":
-    api = authenticate()
-    headlines = load_headlines("data")
-    tweet_ids = publish_thread(api, headlines)
-    with open("data/latest_thread.txt", "w") as f:
-        for tweet_id in tweet_ids:
-            f.write(str(tweet_id) + "\n")
+    args = parse_args()
+    if args.option == "publish":
+        api = authenticate()
+        headlines = load_headlines("data")
+        tweet_ids = publish_thread(api, headlines)
+        with open("data/latest_thread.txt", "w") as f:
+            for tweet_id in tweet_ids:
+                f.write(str(tweet_id) + "\n")
+    elif args.option == "delete":
+        api = authenticate()
+        with open("data/latest_thread.txt", "r") as f:
+            tweet_ids = [int(line) for line in f.readlines()]
+        delete_thread(api, tweet_ids)
+    else:
+        raise ValueError("Invalid option")
