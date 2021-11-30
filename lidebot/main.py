@@ -6,10 +6,10 @@ from typing import List
 from datetime import datetime
 from dataclasses import dataclass
 
-# CONSUMER_KEY = os.environ["CONSUMER_KEY"]
-# CONSUMER_SECRET = os.environ["CONSUMER_SECRET"]
-# ACCESS_TOKEN = os.environ["ACCESS_TOKEN"]
-# ACCESS_TOKEN_SECRET = os.environ["ACCESS_TOKEN_SECRET"]
+CONSUMER_KEY = os.environ["CONSUMER_KEY"]
+CONSUMER_SECRET = os.environ["CONSUMER_SECRET"]
+ACCESS_TOKEN = os.environ["ACCESS_TOKEN"]
+ACCESS_TOKEN_SECRET = os.environ["ACCESS_TOKEN_SECRET"]
 
 
 SOURCES = {
@@ -19,6 +19,7 @@ SOURCES = {
     "veja": "Veja",
     "oglobo": "O Globo",
     "valor": "Valor",
+    "uol": "UOL",
 }
 
 
@@ -51,7 +52,7 @@ class Headline:
         return output.getvalue()
 
 
-def load_headlines(filename: str) -> List[Headline]:
+def load_headlines(directory: str) -> List[Headline]:
     """
     Carrega as manchetes de um arquivo
 
@@ -59,16 +60,23 @@ def load_headlines(filename: str) -> List[Headline]:
     :return: Lista de manchetes
     """
     headlines = []
-    with open(filename, newline="") as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=",")
-        for row in spamreader:
-            headline = Headline(
-                title=row[0],
-                url=row[1],
-                collected_at=datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S"),
-                source=row[3],
-            )
-            headlines.append(headline)
+    hl_files = [
+        os.path.join(directory, f) for f in os.listdir(directory) if f.endswith(".csv")
+    ]
+    for f in hl_files:
+        with open(f, "r") as f:
+            spamreader = csv.reader(f, delimiter=",")
+            next(spamreader)
+            for row in spamreader:
+                if row[0] == "":
+                    continue
+                headline = Headline(
+                    title=row[0].strip(),
+                    url=row[1],
+                    collected_at=datetime.strptime(row[2], "%Y-%m-%d %H:%M:%S.%f"),
+                    source=row[3],
+                )
+                headlines.append(headline)
     return headlines
 
 
@@ -86,13 +94,13 @@ def generate_thread(headlines: List[Headline]):
         source = SOURCES[headline.source]
         new_headline = f"{source}: {headline.title}\n\n"
         if len(tweet + new_headline) > 280:
-            post.append(tweet)
-            tweet = new_headline
+            post.append(tweet + "\n+")
+            tweet = ""
         tweet += new_headline
         if i == len(headlines) - 1:
             post.append(tweet)
     post = [*post, *[hl.url for hl in headlines]]
-    return post
+    return list(post)
 
 
 def authenticate() -> tweepy.API:
@@ -107,7 +115,7 @@ def authenticate() -> tweepy.API:
     return api
 
 
-def publish(api: tweepy.API, headlines: List[Headline]) -> List[int]:
+def publish_thread(api: tweepy.API, headlines: List[Headline]) -> List[int]:
     """
     Publica o tweet a partir de uma lista de manchetes
 
@@ -116,15 +124,30 @@ def publish(api: tweepy.API, headlines: List[Headline]) -> List[int]:
     """
     thread = generate_thread(headlines)
     first_tweet = api.update_status(thread[0])
+    last_tweet_id = first_tweet.id
     tweet_ids = [first_tweet.id]
     for tweet in thread[1:]:
-        tweet_id = api.update_status(tweet, in_reply_to_status_id=first_tweet.id)
+        tweet_id = api.update_status(tweet, in_reply_to_status_id=last_tweet_id)
         tweet_ids.append(tweet_id.id)
+        last_tweet_id = tweet_id.id
     return tweet_ids
+
+
+def delete_thread(api: tweepy.API, tweet_ids: List[int]) -> None:
+    """
+    Deleta os tweets a partir de uma lista de IDs
+
+    :param tweet_ids: Lista de IDs dos tweets
+    :return: None
+    """
+    for tweet_id in tweet_ids:
+        api.destroy_status(tweet_id)
 
 
 if __name__ == "__main__":
     api = authenticate()
-    headlines = load_headlines("latest_headlines.txt")
-    tweet_ids = publish(api, headlines)
-    print(tweet_ids)
+    headlines = load_headlines("data")
+    tweet_ids = publish_thread(api, headlines)
+    with open("data/latest_thread.txt", "w") as f:
+        for tweet_id in tweet_ids:
+            f.write(str(tweet_id) + "\n")
