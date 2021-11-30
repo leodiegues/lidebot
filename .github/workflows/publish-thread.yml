@@ -22,9 +22,13 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-dev
       - name: Run crawlers
-        run: chmod +x ./scripts/run_crawlers.sh | bash
+        run: |
+          chmod +x ./scripts/run_crawlers.sh
+          ./scripts/run_crawlers.sh
       - name: Publish thread
-        run: chmod +x ./scripts/publish_thread.sh | bash
+        run: |
+          chmod +x ./scripts/publish_thread.sh
+          ./scripts/publish_thread.sh
         env:
           CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
           CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
