@@ -67,9 +67,8 @@ def load_headlines(directory: str) -> List[Headline]:
     for f in hl_files:
         with open(f, "r") as f:
             spamreader = csv.reader(f, delimiter=",")
-            next(spamreader)
             for row in spamreader:
-                if row[0] == "":
+                if row[0] == "title" or row[0] == "":
                     continue
                 headline = Headline(
                     title=row[0].strip(),

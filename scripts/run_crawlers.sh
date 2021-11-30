@@ -16,5 +16,3 @@ for spider in $spiders; do
 done
 
 cd ..
-
-ls -a data
