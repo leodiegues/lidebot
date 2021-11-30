@@ -2,4 +2,4 @@
 
 echo "Deletando última thread"
 
-python lidebot/main.py --option delete
+python -m poetry run python lidebot/main.py --option delete

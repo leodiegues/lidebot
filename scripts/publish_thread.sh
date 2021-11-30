@@ -2,4 +2,4 @@
 
 echo "Publicando thread"
 
-python lidebot/main.py --option publish
+python -m poetry run python lidebot/main.py --option publish
