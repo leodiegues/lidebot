@@ -10,9 +10,7 @@ class EstadaoSpider(scrapy.Spider):
     start_urls = ["http://estadao.com.br/"]
 
     def parse(self, response):
-        headline_tag = response.css(
-            "article.destaque-default -principal -font-lg > div.intro > a"
-        )
+        headline_tag = response.css("div.intro:nth-of-type(1) > a")
         yield Headline(
             title=headline_tag.css("::text").extract(),
             url=headline_tag.css("::attr(href)").extract(),
