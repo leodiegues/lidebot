@@ -2,7 +2,7 @@
 
 :robot: que compara as manchetes dos principais jornais do Brasil de hora em hora.
 
-Atualmente, o projeto coleta manchetes de 4 jornais, sendo eles Folha de S. Paulo, O Globo, UOL e Valor Econômico. A lista deve expandir em breve para Estadão e G1.
+O projeto coleta manchetes de 4 jornais, sendo eles Folha de S. Paulo, O Globo, UOL e Valor Econômico. A lista deve expandir em breve para Estadão e G1.
 
 ## Status dos jornais
 
