@@ -40,18 +40,6 @@ class Headline:
     collected_at: datetime
     source: str
 
-    def as_csv(self) -> str:
-        """
-        Retorna uma string com os dados da manchete formatados para ser
-        salva no arquivo CSV.
-
-        :return: String formatada.
-        """
-        output = io.StringIO()
-        writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
-        writer.writerow([self.title, self.url, self.collected_at, self.source])
-        return output.getvalue()
-
 
 def load_headlines(directory: str) -> List[Headline]:
     """
