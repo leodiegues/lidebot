@@ -10,5 +10,5 @@ O projeto, atualmente, coleta manchetes de 4 jornais, sendo eles: Folha de S. Pa
 - [x] O Globo
 - [x] UOL
 - [x] Valor Econômico
-- [ ] Estado de S. Paulo
+- [x] Estado de S. Paulo
 - [ ] G1
