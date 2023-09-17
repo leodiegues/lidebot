@@ -1,8 +1,8 @@
 name: Publish thread
 
-on:
-  schedule:
-    - cron: '0 * * * *'
+# on:
+#   schedule:
+#     - cron: '0 * * * *'
 
 jobs:
   publish_thread:
